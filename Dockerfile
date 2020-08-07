@@ -1,12 +1,12 @@
-FROM python:2.7-alpine
-MAINTAINER "Matjaž Finžgar" <matjaz@finzgar.net>
+FROM python:3.8-alpine
+
+ARG PORT=5000
 
 WORKDIR /app
+COPY . .
 
-COPY requirements.txt /app
 RUN pip install -r requirements.txt
 
-COPY . /app
 
-EXPOSE 5000
-CMD ["python", "webhooks.py"]
+EXPOSE ${PORT}
+CMD python webhooks.py $PORT

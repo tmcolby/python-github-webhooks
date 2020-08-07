@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2014, 2015, 2016 Carlos Jenkins <carlos@jenkins.co.cr>
@@ -16,6 +17,7 @@
 # under the License.
 
 import logging
+import sys
 from sys import stderr, hexversion
 logging.basicConfig(stream=stderr)
 
@@ -70,7 +72,7 @@ def index():
             abort(403)
 
     # Enforce secret
-    secret = config.get('enforce_secret', '')
+    secret = config.get('enforce_secret', '').encode('utf-8')
     if secret:
         # Only SHA1 is supported
         header_signature = request.headers.get('X-Hub-Signature')
@@ -82,7 +84,7 @@ def index():
             abort(501)
 
         # HMAC requires the key to be bytes, but data is string
-        mac = hmac.new(str(secret), msg=request.data, digestmod='sha1')
+        mac = hmac.new(secret, msg=request.data, digestmod='sha1')
 
         # Python prior to 2.7.7 does not have hmac.compare_digest
         if hexversion >= 0x020707F0:
@@ -203,4 +205,7 @@ def index():
 
 
 if __name__ == '__main__':
-    application.run(debug=True, host='0.0.0.0')
+    port=5000
+    if sys.argv[1:]:
+        port=int(sys.argv[1])
+    application.run(host='0.0.0.0', port=port)
