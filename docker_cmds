@@ -1,0 +1,2 @@
+docker build . -t github-webhook
+docker run -d --name github-webhook -p 5000:5000 -v /home/tyson/dev/python-github-webhooks/hooks:/app/hooks -v /home/tyson/dev/python-github-webhooks/config.json:/app/config.json github-webhook
